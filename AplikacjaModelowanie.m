@@ -6,10 +6,10 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
         UIAxes                     matlab.ui.control.UIAxes
         RodzajmodeluDropDownLabel  matlab.ui.control.Label
         RodzajmodeluDropDown       matlab.ui.control.DropDown
-        ParametryPanel             matlab.ui.container.Panel
-        Label                      matlab.ui.control.Label
+        ParametrynowotworuPanel    matlab.ui.container.Panel
+        l1Label                    matlab.ui.control.Label
         lambda1Field               matlab.ui.control.NumericEditField
-        Label_2                    matlab.ui.control.Label
+        l2Label                    matlab.ui.control.Label
         lambda2Field               matlab.ui.control.NumericEditField
         V2Label                    matlab.ui.control.Label
         V2Field                    matlab.ui.control.NumericEditField
@@ -19,23 +19,26 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
         b2Field                    matlab.ui.control.NumericEditField
         b1EditFieldLabel           matlab.ui.control.Label
         b1Field                    matlab.ui.control.NumericEditField
-        Label_5                    matlab.ui.control.Label
+        a21Label                   matlab.ui.control.Label
         alpha21Field               matlab.ui.control.NumericEditField
-        Label_7                    matlab.ui.control.Label
+        a12Label                   matlab.ui.control.Label
         alpha12Field               matlab.ui.control.NumericEditField
-        Label_6                    matlab.ui.control.Label
+        miLabel                    matlab.ui.control.Label
         miField                    matlab.ui.control.NumericEditField
         dEditFieldLabel            matlab.ui.control.Label
         dField                     matlab.ui.control.NumericEditField
-        gLabel                     matlab.ui.control.Label
-        gField                     matlab.ui.control.NumericEditField
-        eEditFieldLabel            matlab.ui.control.Label
-        eField                     matlab.ui.control.NumericEditField
         KEditFieldLabel            matlab.ui.control.Label
         KField                     matlab.ui.control.NumericEditField
-        ObliczButton               matlab.ui.control.Button
         tsLabel                    matlab.ui.control.Label
         tsField                    matlab.ui.control.NumericEditField
+        ParametryleczeniaPanel     matlab.ui.container.Panel
+        eEditFieldLabel            matlab.ui.control.Label
+        eField                     matlab.ui.control.NumericEditField
+        clrLabel                   matlab.ui.control.Label
+        clrField                   matlab.ui.control.NumericEditField
+        DLabel                     matlab.ui.control.Label
+        DField                     matlab.ui.control.NumericEditField
+        ObliczButton               matlab.ui.control.Button
     end
 
     
@@ -51,10 +54,11 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
         d % Description
         mi % Description
         e % Description
-        g % Description
         K % Description
         model % Description
         ts % Description
+        clr % Description
+        D % Description
     end
     methods
         function Rysuj(app)
@@ -171,11 +175,12 @@ end
             app.alpha21 = app.alpha21Field.Value;
             app.d = app.dField.Value;
             app.mi = app.miField.Value;
-            app.e = app.eField.Value;
-            app.g = app.gField.Value;
+            app.e = app.eField.Value; 
             app.ts = app.tsField.Value;
             app.model = app.RodzajmodeluDropDown.Value;
             app.K = app.KField.Value;
+            app.clr = app.clrField.Value;
+            app.D = app.D.Value;
             Rysuj(app);
         end
     end
@@ -211,156 +216,171 @@ end
             app.RodzajmodeluDropDown.Position = [112 424 490 22];
             app.RodzajmodeluDropDown.Value = 'gompertz';
 
-            % Create ParametryPanel
-            app.ParametryPanel = uipanel(app.UIFigure);
-            app.ParametryPanel.Title = 'Parametry';
-            app.ParametryPanel.Position = [419 107 183 286];
+            % Create ParametrynowotworuPanel
+            app.ParametrynowotworuPanel = uipanel(app.UIFigure);
+            app.ParametrynowotworuPanel.Title = 'Parametry nowotworu';
+            app.ParametrynowotworuPanel.Position = [419 192 183 219];
 
-            % Create Label
-            app.Label = uilabel(app.ParametryPanel);
-            app.Label.HorizontalAlignment = 'right';
-            app.Label.Position = [1 237 25 22];
-            app.Label.Text = 'l1';
+            % Create l1Label
+            app.l1Label = uilabel(app.ParametrynowotworuPanel);
+            app.l1Label.HorizontalAlignment = 'right';
+            app.l1Label.Position = [1 170 25 22];
+            app.l1Label.Text = 'l1';
 
             % Create lambda1Field
-            app.lambda1Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.lambda1Field.Position = [41 237 49 22];
+            app.lambda1Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.lambda1Field.Position = [41 170 49 22];
 
-            % Create Label_2
-            app.Label_2 = uilabel(app.ParametryPanel);
-            app.Label_2.HorizontalAlignment = 'right';
-            app.Label_2.Position = [89 237 25 22];
-            app.Label_2.Text = 'l2';
+            % Create l2Label
+            app.l2Label = uilabel(app.ParametrynowotworuPanel);
+            app.l2Label.HorizontalAlignment = 'right';
+            app.l2Label.Position = [89 170 25 22];
+            app.l2Label.Text = 'l2';
 
             % Create lambda2Field
-            app.lambda2Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.lambda2Field.Position = [129 237 49 22];
+            app.lambda2Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.lambda2Field.Position = [129 170 49 22];
 
             % Create V2Label
-            app.V2Label = uilabel(app.ParametryPanel);
+            app.V2Label = uilabel(app.ParametrynowotworuPanel);
             app.V2Label.HorizontalAlignment = 'right';
-            app.V2Label.Position = [89 207 25 22];
+            app.V2Label.Position = [89 140 25 22];
             app.V2Label.Text = 'V2';
 
             % Create V2Field
-            app.V2Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.V2Field.Position = [129 207 49 22];
+            app.V2Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.V2Field.Position = [129 140 49 22];
 
             % Create V1EditFieldLabel
-            app.V1EditFieldLabel = uilabel(app.ParametryPanel);
+            app.V1EditFieldLabel = uilabel(app.ParametrynowotworuPanel);
             app.V1EditFieldLabel.HorizontalAlignment = 'right';
-            app.V1EditFieldLabel.Position = [1 207 25 22];
+            app.V1EditFieldLabel.Position = [1 140 25 22];
             app.V1EditFieldLabel.Text = 'V1';
 
             % Create V1Field
-            app.V1Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.V1Field.Position = [41 207 49 22];
+            app.V1Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.V1Field.Position = [41 140 49 22];
 
             % Create b2Label
-            app.b2Label = uilabel(app.ParametryPanel);
+            app.b2Label = uilabel(app.ParametrynowotworuPanel);
             app.b2Label.HorizontalAlignment = 'right';
-            app.b2Label.Position = [89 173 25 22];
+            app.b2Label.Position = [89 106 25 22];
             app.b2Label.Text = 'b2';
 
             % Create b2Field
-            app.b2Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.b2Field.Position = [129 173 49 22];
+            app.b2Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.b2Field.Position = [129 106 49 22];
 
             % Create b1EditFieldLabel
-            app.b1EditFieldLabel = uilabel(app.ParametryPanel);
+            app.b1EditFieldLabel = uilabel(app.ParametrynowotworuPanel);
             app.b1EditFieldLabel.HorizontalAlignment = 'right';
-            app.b1EditFieldLabel.Position = [1 173 25 22];
+            app.b1EditFieldLabel.Position = [1 106 25 22];
             app.b1EditFieldLabel.Text = 'b1';
 
             % Create b1Field
-            app.b1Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.b1Field.Position = [41 173 49 22];
+            app.b1Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.b1Field.Position = [41 106 49 22];
 
-            % Create Label_5
-            app.Label_5 = uilabel(app.ParametryPanel);
-            app.Label_5.HorizontalAlignment = 'right';
-            app.Label_5.Position = [88 142 26 22];
-            app.Label_5.Text = 'a21';
+            % Create a21Label
+            app.a21Label = uilabel(app.ParametrynowotworuPanel);
+            app.a21Label.HorizontalAlignment = 'right';
+            app.a21Label.Position = [88 75 26 22];
+            app.a21Label.Text = 'a21';
 
             % Create alpha21Field
-            app.alpha21Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.alpha21Field.Position = [129 142 49 22];
+            app.alpha21Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.alpha21Field.Position = [129 75 49 22];
 
-            % Create Label_7
-            app.Label_7 = uilabel(app.ParametryPanel);
-            app.Label_7.HorizontalAlignment = 'right';
-            app.Label_7.Position = [0 142 26 22];
-            app.Label_7.Text = 'a12';
+            % Create a12Label
+            app.a12Label = uilabel(app.ParametrynowotworuPanel);
+            app.a12Label.HorizontalAlignment = 'right';
+            app.a12Label.Position = [1 75 26 22];
+            app.a12Label.Text = 'a12';
 
             % Create alpha12Field
-            app.alpha12Field = uieditfield(app.ParametryPanel, 'numeric');
-            app.alpha12Field.Position = [41 142 49 22];
+            app.alpha12Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.alpha12Field.Position = [41 75 49 22];
 
-            % Create Label_6
-            app.Label_6 = uilabel(app.ParametryPanel);
-            app.Label_6.HorizontalAlignment = 'right';
-            app.Label_6.Position = [89 106 25 22];
-            app.Label_6.Text = 'mi';
+            % Create miLabel
+            app.miLabel = uilabel(app.ParametrynowotworuPanel);
+            app.miLabel.HorizontalAlignment = 'right';
+            app.miLabel.Position = [89 39 25 22];
+            app.miLabel.Text = 'mi';
 
             % Create miField
-            app.miField = uieditfield(app.ParametryPanel, 'numeric');
-            app.miField.Position = [129 106 49 22];
+            app.miField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.miField.Position = [129 39 49 22];
 
             % Create dEditFieldLabel
-            app.dEditFieldLabel = uilabel(app.ParametryPanel);
+            app.dEditFieldLabel = uilabel(app.ParametrynowotworuPanel);
             app.dEditFieldLabel.HorizontalAlignment = 'right';
-            app.dEditFieldLabel.Position = [1 106 25 22];
+            app.dEditFieldLabel.Position = [2 39 25 22];
             app.dEditFieldLabel.Text = 'd';
 
             % Create dField
-            app.dField = uieditfield(app.ParametryPanel, 'numeric');
-            app.dField.Position = [41 106 49 22];
-
-            % Create gLabel
-            app.gLabel = uilabel(app.ParametryPanel);
-            app.gLabel.HorizontalAlignment = 'right';
-            app.gLabel.Position = [89 76 25 22];
-            app.gLabel.Text = 'g';
-
-            % Create gField
-            app.gField = uieditfield(app.ParametryPanel, 'numeric');
-            app.gField.Position = [129 76 49 22];
-
-            % Create eEditFieldLabel
-            app.eEditFieldLabel = uilabel(app.ParametryPanel);
-            app.eEditFieldLabel.HorizontalAlignment = 'right';
-            app.eEditFieldLabel.Position = [1 76 25 22];
-            app.eEditFieldLabel.Text = 'e';
-
-            % Create eField
-            app.eField = uieditfield(app.ParametryPanel, 'numeric');
-            app.eField.Position = [41 76 49 22];
+            app.dField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.dField.Position = [42 39 49 22];
 
             % Create KEditFieldLabel
-            app.KEditFieldLabel = uilabel(app.ParametryPanel);
+            app.KEditFieldLabel = uilabel(app.ParametrynowotworuPanel);
             app.KEditFieldLabel.HorizontalAlignment = 'right';
-            app.KEditFieldLabel.Position = [1 46 25 22];
+            app.KEditFieldLabel.Position = [2 10 25 22];
             app.KEditFieldLabel.Text = 'K';
 
             % Create KField
-            app.KField = uieditfield(app.ParametryPanel, 'numeric');
-            app.KField.Position = [41 46 49 22];
-
-            % Create ObliczButton
-            app.ObliczButton = uibutton(app.ParametryPanel, 'push');
-            app.ObliczButton.ButtonPushedFcn = createCallbackFcn(app, @ObliczButtonPushed, true);
-            app.ObliczButton.Position = [52 13 100 22];
-            app.ObliczButton.Text = 'Oblicz';
+            app.KField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.KField.Position = [42 10 49 22];
 
             % Create tsLabel
-            app.tsLabel = uilabel(app.ParametryPanel);
+            app.tsLabel = uilabel(app.ParametrynowotworuPanel);
             app.tsLabel.HorizontalAlignment = 'right';
-            app.tsLabel.Position = [90 46 25 22];
+            app.tsLabel.Position = [90 10 25 22];
             app.tsLabel.Text = 'ts';
 
             % Create tsField
-            app.tsField = uieditfield(app.ParametryPanel, 'numeric');
-            app.tsField.Position = [130 46 49 22];
+            app.tsField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
+            app.tsField.Position = [130 10 49 22];
+
+            % Create ParametryleczeniaPanel
+            app.ParametryleczeniaPanel = uipanel(app.UIFigure);
+            app.ParametryleczeniaPanel.Title = 'Parametry leczenia';
+            app.ParametryleczeniaPanel.Position = [421 68 183 115];
+
+            % Create eEditFieldLabel
+            app.eEditFieldLabel = uilabel(app.ParametryleczeniaPanel);
+            app.eEditFieldLabel.HorizontalAlignment = 'right';
+            app.eEditFieldLabel.Position = [1 59 25 22];
+            app.eEditFieldLabel.Text = 'e';
+
+            % Create eField
+            app.eField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
+            app.eField.Position = [41 59 49 22];
+
+            % Create clrLabel
+            app.clrLabel = uilabel(app.ParametryleczeniaPanel);
+            app.clrLabel.HorizontalAlignment = 'right';
+            app.clrLabel.Position = [89 59 25 22];
+            app.clrLabel.Text = 'clr';
+
+            % Create clrField
+            app.clrField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
+            app.clrField.Position = [129 59 49 22];
+
+            % Create DLabel
+            app.DLabel = uilabel(app.ParametryleczeniaPanel);
+            app.DLabel.HorizontalAlignment = 'right';
+            app.DLabel.Position = [1 20 25 22];
+            app.DLabel.Text = 'D';
+
+            % Create DField
+            app.DField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
+            app.DField.Position = [41 20 49 22];
+
+            % Create ObliczButton
+            app.ObliczButton = uibutton(app.UIFigure, 'push');
+            app.ObliczButton.ButtonPushedFcn = createCallbackFcn(app, @ObliczButtonPushed, true);
+            app.ObliczButton.Position = [470 34 100 22];
+            app.ObliczButton.Text = 'Oblicz';
 
             % Show the figure after all components are created
             app.UIFigure.Visible = 'on';
