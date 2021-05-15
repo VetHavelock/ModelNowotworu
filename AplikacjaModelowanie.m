@@ -180,7 +180,7 @@ end
             app.model = app.RodzajmodeluDropDown.Value;
             app.K = app.KField.Value;
             app.clr = app.clrField.Value;
-            app.D = app.D.Value;
+            app.D = app.DField.Value;
             Rysuj(app);
         end
     end
