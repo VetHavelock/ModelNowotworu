@@ -38,6 +38,10 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
         clrField                   matlab.ui.control.NumericEditField
         DLabel                     matlab.ui.control.Label
         DField                     matlab.ui.control.NumericEditField
+        PocztekLabel               matlab.ui.control.Label
+        BeginField                 matlab.ui.control.NumericEditField
+        CzstoLabel                 matlab.ui.control.Label
+        freqField                  matlab.ui.control.NumericEditField
         ObliczButton               matlab.ui.control.Button
     end
 
@@ -59,6 +63,8 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
         ts % Description
         clr % Description
         D % Description
+        begin % Description
+        freq % Description
     end
     methods
         function Rysuj(app)
@@ -121,11 +127,20 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
        
         
         function [T,dK,dV] = ModelHahnfeldtaZLeczeniem(app)
-            
+            x = [app.V1,app.K];
+            y = [app.lambda1, app.mi, app.b1, app.d, app.begin, app.freq, app.e, app.D, app.clr, app.ts];
+            [T,X] = ode45(@(t,x) app.RownaniaHahnfeldtaZLeczeniem(t,x,y),[0 app.ts],x);
+            dV = X(:,1);
+            dK=X(:,2);
         end
         
         function [T,dK,dV1,dV2] = ModelHahnfeldtaZKonkurencja(app)
-            
+            x = [app.V1,app.V2, app.K];
+            y = [app.lambda1, app.mi, app.b1, app.d, app.lambda2, app.b2, app.alpha12,app.alpha21];
+            [T,X] = ode45(@(t,x) app.RownaniaHahnfeldtaZKonkurencja(t,x,y),[0 app.ts],x);
+            dV1 = X(:,1);
+            dV2 = X(:,2);
+            dK=X(:,3);
         end
         
     end
@@ -151,11 +166,48 @@ classdef AplikacjaModelowanie < matlab.apps.AppBase
             wynik = [dV; dK];
         end
          function wynik = RownaniaHahnfeldtaZLeczeniem(t,x,y)
+            V = x(1);
+            K1 = x(2);
+            l = y(1);
+            m = y(2);
+            b = y(3);
+            d1 = y(4);%app.begin, app.frq, app.e, app.D, app.clr
+            begin = y(5);
+            freq = y(6);
+            e = y(7);
+            D = y(8);
+            clr = y(9);
+            koniec = y(10);
             
+            T = begin:freq:koniec;
+            
+            syms s;
+            f1 = sum(dirac(s-T));
+            f2 = exp(-clr*(t-s));
+            f3 = D*f1*f2;
+            g = int(f3,s,[0 t]);
+            dV = -l*V*log(V/K1);
+            dK = -m*K1+b*V-d1*K1*V^(2/3)-e*K1*g;
+            wynik = [double(dV);double(dK)];
         end
         
         function wynik = RownaniaHahnfeldtaZKonkurencja(t,x,y)
+            V = x(1);
+            Vb = x(2);
+            K1 = x(3);
+            l = y(1);
+            m = y(2);
+            b = y(3);
+            d1 = y(4);%app.lambda2, app.b2, app.alpha12,app.alpha21
+            lb = y(5);
+            bb = y(6);
+            a12 = y(7);
+            a21 = y(8);
             
+            dV1 = -l*V*log((V+a12*Vb)*K1^(-1));
+            dV2 = -lb*Vb*log((Vb+a21*V)*K1^(-1));
+            dK = -m*K1+b*V+bb*Vb-d1*(V+Vb)^(2/3)*K1;
+            wynik = [dV1; dV2; dK];
         end
 end
     
@@ -181,6 +233,8 @@ end
             app.K = app.KField.Value;
             app.clr = app.clrField.Value;
             app.D = app.DField.Value;
+            app.begin = app.BeginField.Value;
+            app.freq = app.freqField.Value;
             Rysuj(app);
         end
     end
@@ -199,8 +253,8 @@ end
             % Create UIAxes
             app.UIAxes = uiaxes(app.UIFigure);
             title(app.UIAxes, 'Przebiegi w czasie V i K')
-            xlabel(app.UIAxes, {'Czas'; ''})
-            ylabel(app.UIAxes, 'Y')
+            xlabel(app.UIAxes, {'Czas [dni]'; ''})
+            ylabel(app.UIAxes, 'Objêtoœæ [mm^3]')
             app.UIAxes.Position = [32 55 382 338];
 
             % Create RodzajmodeluDropDownLabel
@@ -230,6 +284,7 @@ end
             % Create lambda1Field
             app.lambda1Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.lambda1Field.Position = [41 170 49 22];
+            app.lambda1Field.Value = 0.0741;
 
             % Create l2Label
             app.l2Label = uilabel(app.ParametrynowotworuPanel);
@@ -260,6 +315,7 @@ end
             % Create V1Field
             app.V1Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.V1Field.Position = [41 140 49 22];
+            app.V1Field.Value = 71;
 
             % Create b2Label
             app.b2Label = uilabel(app.ParametrynowotworuPanel);
@@ -280,6 +336,7 @@ end
             % Create b1Field
             app.b1Field = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.b1Field.Position = [41 106 49 22];
+            app.b1Field.Value = 1.3383;
 
             % Create a21Label
             app.a21Label = uilabel(app.ParametrynowotworuPanel);
@@ -310,6 +367,7 @@ end
             % Create miField
             app.miField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.miField.Position = [129 39 49 22];
+            app.miField.Value = 0.0021;
 
             % Create dEditFieldLabel
             app.dEditFieldLabel = uilabel(app.ParametrynowotworuPanel);
@@ -320,6 +378,7 @@ end
             % Create dField
             app.dField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.dField.Position = [42 39 49 22];
+            app.dField.Value = 0.002;
 
             % Create KEditFieldLabel
             app.KEditFieldLabel = uilabel(app.ParametrynowotworuPanel);
@@ -330,6 +389,7 @@ end
             % Create KField
             app.KField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.KField.Position = [42 10 49 22];
+            app.KField.Value = 71;
 
             % Create tsLabel
             app.tsLabel = uilabel(app.ParametrynowotworuPanel);
@@ -340,46 +400,72 @@ end
             % Create tsField
             app.tsField = uieditfield(app.ParametrynowotworuPanel, 'numeric');
             app.tsField.Position = [130 10 49 22];
+            app.tsField.Value = 60;
 
             % Create ParametryleczeniaPanel
             app.ParametryleczeniaPanel = uipanel(app.UIFigure);
             app.ParametryleczeniaPanel.Title = 'Parametry leczenia';
-            app.ParametryleczeniaPanel.Position = [421 68 183 115];
+            app.ParametryleczeniaPanel.Position = [421 55 212 128];
 
             % Create eEditFieldLabel
             app.eEditFieldLabel = uilabel(app.ParametryleczeniaPanel);
             app.eEditFieldLabel.HorizontalAlignment = 'right';
-            app.eEditFieldLabel.Position = [1 59 25 22];
+            app.eEditFieldLabel.Position = [1 72 25 22];
             app.eEditFieldLabel.Text = 'e';
 
             % Create eField
             app.eField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
-            app.eField.Position = [41 59 49 22];
+            app.eField.Position = [41 72 49 22];
+            app.eField.Value = 1.3;
 
             % Create clrLabel
             app.clrLabel = uilabel(app.ParametryleczeniaPanel);
             app.clrLabel.HorizontalAlignment = 'right';
-            app.clrLabel.Position = [89 59 25 22];
+            app.clrLabel.Position = [115 72 25 22];
             app.clrLabel.Text = 'clr';
 
             % Create clrField
             app.clrField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
-            app.clrField.Position = [129 59 49 22];
+            app.clrField.Position = [155 72 49 22];
+            app.clrField.Value = 10.1;
 
             % Create DLabel
             app.DLabel = uilabel(app.ParametryleczeniaPanel);
             app.DLabel.HorizontalAlignment = 'right';
-            app.DLabel.Position = [1 20 25 22];
+            app.DLabel.Position = [1 40 25 22];
             app.DLabel.Text = 'D';
 
             % Create DField
             app.DField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
-            app.DField.Position = [41 20 49 22];
+            app.DField.Position = [41 40 49 22];
+            app.DField.Value = 13.2;
+
+            % Create PocztekLabel
+            app.PocztekLabel = uilabel(app.ParametryleczeniaPanel);
+            app.PocztekLabel.HorizontalAlignment = 'right';
+            app.PocztekLabel.Position = [86 40 55 22];
+            app.PocztekLabel.Text = 'Poczÿtek';
+
+            % Create BeginField
+            app.BeginField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
+            app.BeginField.Position = [155 40 49 22];
+            app.BeginField.Value = 20;
+
+            % Create CzstoLabel
+            app.CzstoLabel = uilabel(app.ParametryleczeniaPanel);
+            app.CzstoLabel.HorizontalAlignment = 'right';
+            app.CzstoLabel.Position = [97 9 55 22];
+            app.CzstoLabel.Text = 'Czÿstoÿÿ';
+
+            % Create freqField
+            app.freqField = uieditfield(app.ParametryleczeniaPanel, 'numeric');
+            app.freqField.Position = [155 9 49 22];
+            app.freqField.Value = 7;
 
             % Create ObliczButton
             app.ObliczButton = uibutton(app.UIFigure, 'push');
             app.ObliczButton.ButtonPushedFcn = createCallbackFcn(app, @ObliczButtonPushed, true);
-            app.ObliczButton.Position = [470 34 100 22];
+            app.ObliczButton.Position = [470 21 100 22];
             app.ObliczButton.Text = 'Oblicz';
 
             % Show the figure after all components are created
